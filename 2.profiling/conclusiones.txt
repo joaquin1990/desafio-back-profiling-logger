@@ -1,0 +1,2 @@
+Conclusion:
+- Hay una clara diferencia entre los tiempos de ejecucion con los console.log, siendo mucho menores cuando no tienen los console.logs. 

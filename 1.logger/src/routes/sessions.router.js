@@ -1,5 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
+import logger from "../middlewares/logger.winston.js";
+import moment from "moment";
 
 const router = Router();
 
@@ -7,11 +9,21 @@ router.post(
   "/register",
   passport.authenticate("register", {
     failureRedirect: "/api/sessions/registerfail",
+    failureMessage: true,
   }),
   async (req, res) => {
-    // I pass the name of my custonm strategy to "authenticate".
-    // The big objective of passport is to return a req.user.
-    res.send({ status: "success", payload: req.user._id });
+    try {
+      // I pass the name of my custonm strategy to "authenticate".
+      // The big objective of passport is to return a req.user.
+      console.log(req.user);
+      res.send({ status: "success", payload: req.user._id });
+    } catch (error) {
+      console.log("Entro en el catch del register");
+      logger.log(
+        "warn",
+        `${new moment().format("DD/MM/YYYY HH:mm:ss")} => Error: ${error}`
+      );
+    }
   }
 );
 

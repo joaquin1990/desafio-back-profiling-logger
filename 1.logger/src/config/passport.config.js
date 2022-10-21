@@ -3,6 +3,8 @@ import local from "passport-local";
 import usersService from "../models/Users.js";
 import { createHash, isValidPassword } from "../utils.js";
 import GithubStrategy from "passport-github2";
+import logger from "../middlewares/logger.winston.js";
+import moment from "moment";
 
 // We use passport to migrate all the register structure and login into just one file.
 const LocalStrategy = local.Strategy;
@@ -13,11 +15,19 @@ const initializePassport = () => {
     new LocalStrategy(
       { passReqToCallback: true, usernameField: "email" },
       async (req, email, password, done) => {
-        // If I didnt specify the usernameField, then i put "username" instead of "email"
         try {
           const { name } = req.body;
           if (!name || !email || !password)
-            return done(null, false, { message: "Incomplete form fields" });
+            return done(
+              null,
+              false,
+              logger.log(
+                "warn",
+                `${new moment().format(
+                  "DD/MM/YYYY HH:mm:ss"
+                )} --- You Must complete all the fields`
+              )
+            );
           // Is the user already in the database?
           const exists = await usersService.findOne({ email: email });
           // This is the unique field that i am requesting

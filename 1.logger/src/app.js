@@ -10,6 +10,7 @@ import initializePassport from "./config/passport.config.js";
 import passport from "passport";
 import config from "./config/config.js";
 import logger from "./middlewares/logger.winston.js";
+import moment from "moment";
 
 const app = express();
 const connection = mongoose.connect(
@@ -46,7 +47,7 @@ app.set("view engine", "handlebars");
 app.use("/", viewsRouter);
 app.use("/api/sessions", sessionsRouter);
 
-const date = new Date(Date.now()).toLocaleDateString();
+const date = new moment().format("DD/MM/YYYY HH:mm:ss");
 const PORT = config.app.PORT || 8080;
 
 const server = app.listen(PORT, () => {
